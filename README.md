@@ -8,7 +8,7 @@ demonstration platform with a sentiment analytics plugin.
 ## Repository layout
 
 ```text
-configs/                 Experiment and labeling configurations
+configs/                 Experiment and labelling configurations
 data/                    Local/DVC-tracked datasets (not stored in Git)
 docs/                    Research protocol, data dictionary, and documentation
 experiments/             Versioned experiment definitions and result summaries
@@ -34,7 +34,7 @@ data/raw -> data/interim -> data/processed
 - `external`: separately sourced resources such as Sinhala stop-word lists.
 - `samples`: tiny, anonymized examples safe to commit for tests/documentation.
 
-Large data and model artifacts should be tracked with DVC and stored remotely
+Large data and model artefacts should be tracked with DVC and stored remotely
 (for example, in DagsHub storage). Git should track source code, configurations,
 DVC pointer files, documentation, and compact result summaries.
 
