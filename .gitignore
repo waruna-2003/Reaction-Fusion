@@ -24,6 +24,14 @@ data/raw/**
 data/interim/**
 data/processed/**
 data/external/**
+!data/raw/**/
+!data/interim/**/
+!data/processed/**/
+!data/external/**/
+!data/raw/**/*.dvc
+!data/interim/**/*.dvc
+!data/processed/**/*.dvc
+!data/external/**/*.dvc
 !data/raw/.gitkeep
 !data/interim/.gitkeep
 !data/processed/.gitkeep
