@@ -29,18 +29,32 @@ required, and never expose personal identifiers in committed samples.
 7. Version every label with algorithm parameters and dataset revision.
 8. Keep a manually annotated validation subset with inter-annotator agreement.
 
-## Suggested processed files
+## Implemented release files
 
 ```text
-data/processed/
-  reactionfusion_v1/
-    train.parquet
-    validation.parquet
-    test.parquet
-    schema.json
-    dataset_card.md
+data/releases/reactionfusion_v1/
+  dataset.csv
+  dataset_deduplicated.csv
+  train.csv
+  validation.csv
+  test.csv
+  human_annotation_candidates.csv
+  human_annotation_workbook.xlsx
+  rejected_records.csv
+  quality_report.json
+  labeling_config.json
+  DATASET_CARD.md
 ```
+
+`dataset.csv` retains repeated records for the main experiment, while
+`dataset_deduplicated.csv` supports a deduplication ablation. All occurrences of
+the same normalized text receive the same split, so duplicates cannot leak across
+training, validation, and test sets.
+
+The annotation workbook is deliberately blinded. Annotators see masked post text
+and language type, but no reaction counts, automatic label, score, or confidence.
+Two annotators label independently using `positive`, `negative`, `neutral`,
+`mixed`, or `uncertain`; an adjudicator then resolves disagreements.
 
 Do not publish raw social-media data until licensing, platform terms, privacy,
 and institutional ethics requirements have been reviewed.
-

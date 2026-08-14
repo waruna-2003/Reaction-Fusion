@@ -1,0 +1,33 @@
+{
+  "version": "reactionfusion_v1_provisional",
+  "reactions": [
+    "like",
+    "love",
+    "care",
+    "haha",
+    "wow",
+    "sad",
+    "angry"
+  ],
+  "minimum_total_reactions": 1,
+  "smoothing_alpha": 1.0,
+  "anchor_weights": {
+    "love": 1.0,
+    "care": 0.55,
+    "sad": -1.0,
+    "angry": -1.0
+  },
+  "ambiguous_context_weights": {
+    "like": 0.35,
+    "haha": 0.85,
+    "wow": 0.25
+  },
+  "anchor_context_scale": 4.0,
+  "positive_threshold": 0.12,
+  "negative_threshold": -0.12,
+  "mixed_entropy_threshold": 0.72,
+  "mixed_opposition_threshold": 0.05,
+  "low_confidence_threshold": 0.35,
+  "engagement_scale": 50.0,
+  "status": "provisional_pending_human_validation"
+}

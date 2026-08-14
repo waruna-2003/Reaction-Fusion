@@ -38,6 +38,10 @@ data/external/**
 !data/samples/*.jsonl
 !data/samples/*.parquet
 
+# Privacy-reviewed dataset releases are intentionally versioned
+!data/releases/
+!data/releases/**
+
 # Local editable-package metadata
 *.egg-info/
 

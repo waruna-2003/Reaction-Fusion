@@ -50,3 +50,24 @@ model artefacts require a separate storage decision before publication.
 
 See [docs/DATASET.md](docs/DATASET.md) before adding data.
 
+## Current dataset preprocessing
+
+The initial source snapshot contains 1,000 Facebook posts with counts for Like,
+Love, Care, Haha, Wow, Sad, and Angry. Run the complete deterministic pipeline
+from the repository root:
+
+```powershell
+python scripts/preprocess_dataset.py
+```
+
+The pipeline validates the schema and reaction totals, rejects invalid placeholder
+records, normalizes Sinhala text while preserving emoji, masks common personal
+identifiers, detects duplicates, creates reaction-distribution features, assigns
+provisional ReactionFusion and filtered-baseline labels, and makes group-aware
+70/15/15 splits. Public, privacy-masked outputs are written to
+`data/releases/reactionfusion_v1/`.
+
+The labels are weak labels, not human ground truth. Use
+`human_annotation_workbook.xlsx` for independent double annotation and
+adjudication before reporting the algorithm as validated.
+
