@@ -19,19 +19,11 @@ Thumbs.db
 # Notebooks
 .ipynb_checkpoints/
 
-# Dataset artifacts (DVC pointer files remain versioned)
+# Raw and working dataset artifacts are not published directly
 data/raw/**
 data/interim/**
 data/processed/**
 data/external/**
-!data/raw/**/
-!data/interim/**/
-!data/processed/**/
-!data/external/**/
-!data/raw/**/*.dvc
-!data/interim/**/*.dvc
-!data/processed/**/*.dvc
-!data/external/**/*.dvc
 !data/raw/.gitkeep
 !data/interim/.gitkeep
 !data/processed/.gitkeep
@@ -45,6 +37,9 @@ data/external/**
 !data/samples/*.tsv
 !data/samples/*.jsonl
 !data/samples/*.parquet
+
+# Local editable-package metadata
+*.egg-info/
 
 # Models and generated experiment artifacts
 models/**
