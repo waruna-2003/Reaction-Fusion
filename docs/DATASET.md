@@ -52,9 +52,12 @@ the same normalized text receive the same split, so duplicates cannot leak acros
 training, validation, and test sets.
 
 The annotation workbook is deliberately blinded. Annotators see masked post text
-and language type, but no reaction counts, automatic label, score, or confidence.
-Two annotators label independently using `positive`, `negative`, `neutral`,
-`mixed`, or `uncertain`; an adjudicator then resolves disagreements.
+and language type, but no reaction counts, automatic label, score, or algorithmic
+confidence. Two annotators independently assign one sentiment label, multi-label
+emotions, approval stance, sarcasm, and annotation confidence. The sentiment
+choices are `positive`, `negative`, `neutral`, `mixed`, or `uncertain`; emotion,
+approval, and sarcasm fields use `yes`, `no`, or `uncertain`. An adjudicator then
+resolves disagreements in a separate sheet.
 
 Do not publish raw social-media data until licensing, platform terms, privacy,
 and institutional ethics requirements have been reviewed.

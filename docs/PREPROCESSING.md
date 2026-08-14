@@ -45,6 +45,8 @@ held-out human-adjudicated set.
 ## Collaboration
 
 Upload `human_annotation_workbook.xlsx` to Google Drive and open it with Google
-Sheets. Give each reviewer edit access, but complete the two annotation passes
-independently before exposing their labels to one another. Download the completed
-sheet as `.xlsx` or `.csv` and preserve it as a versioned validation artifact.
+Sheets. The coordinator should give each reviewer a separate copy or restrict the
+other reviewer sheet until both independent passes are complete. Each reviewer
+records sentiment, multi-label emotions, approval, sarcasm, and confidence. Merge
+their decisions into the Adjudication sheet, download the completed workbook, and
+preserve it as a versioned validation artifact.

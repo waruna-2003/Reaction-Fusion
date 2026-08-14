@@ -341,7 +341,8 @@ duplicate leakage. Use `dataset_deduplicated.csv` for the deduplication ablation
 - `dataset_deduplicated.csv`: highest-engagement record per normalized text.
 - `train.csv`, `validation.csv`, `test.csv`: group-aware splits.
 - `human_annotation_candidates.csv`: blank two-annotator/adjudication task.
-- `human_annotation_workbook.xlsx`: Google Sheets-ready blinded annotation workbook.
+- `human_annotation_workbook.xlsx`: Google Sheets-ready blinded sentiment, emotion,
+  approval, and sarcasm annotation workbook.
 - `rejected_records.csv`: non-sensitive rejection audit.
 - `quality_report.json`: reproducible counts and distributions.
 - `labeling_config.json`: exact provisional ReactionFusion parameters.
