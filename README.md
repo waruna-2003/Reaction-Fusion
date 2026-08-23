@@ -81,3 +81,17 @@ This validates the completed workbook, calculates inter-annotator agreement, and
 compares ReactionFusion v1 and the filtered-reaction baseline against adjudicated
 human sentiment labels.
 
+## ReactionFusion v2 development model
+
+Train the reaction-only, human-calibrated hybrid v2 model with:
+
+```powershell
+python scripts/train_reactionfusion_v2.py
+```
+
+The command performs grouped out-of-fold evaluation, trains emotion and sentiment
+calibrators, applies confidence-based abstention, serializes the model, and creates
+`data/releases/reactionfusion_v2/`. See
+[docs/REACTIONFUSION_V2.md](docs/REACTIONFUSION_V2.md) for its architecture and
+research limitations.
+

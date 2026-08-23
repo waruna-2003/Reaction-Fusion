@@ -16,6 +16,7 @@ dependencies = [
 [project.scripts]
 reactionfusion-preprocess = "reactionfusion.data.preprocessing:main"
 reactionfusion-evaluate-annotations = "reactionfusion.evaluation.human_validation:main"
+reactionfusion-train-v2 = "reactionfusion.training.reactionfusion_v2_pipeline:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.6"]
