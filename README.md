@@ -71,3 +71,13 @@ The labels are weak labels, not human ground truth. Use
 `human_annotation_workbook.xlsx` for independent double annotation and
 adjudication before reporting the algorithm as validated.
 
+After both reviewers and adjudication are complete, run:
+
+```powershell
+python scripts/evaluate_human_annotations.py
+```
+
+This validates the completed workbook, calculates inter-annotator agreement, and
+compares ReactionFusion v1 and the filtered-reaction baseline against adjudicated
+human sentiment labels.
+

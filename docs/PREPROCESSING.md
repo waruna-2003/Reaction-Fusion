@@ -50,3 +50,21 @@ other reviewer sheet until both independent passes are complete. Each reviewer
 records sentiment, multi-label emotions, approval, sarcasm, and confidence. Merge
 their decisions into the Adjudication sheet, download the completed workbook, and
 preserve it as a versioned validation artifact.
+
+## Completed annotation evaluation
+
+Place the immutable completed workbook at
+`data/annotations/reactionfusion_v1/adjudication_completed.xlsx`, then run:
+
+```powershell
+python scripts/evaluate_human_annotations.py
+```
+
+The evaluator validates sheet alignment and allowed labels, calculates raw
+agreement and Cohen's kappa for sentiment, emotions, approval, sarcasm, and
+confidence, and compares ReactionFusion v1 with the filtered baseline. Derived
+outputs are written to `data/releases/reactionfusion_v1/human_validation/`.
+
+The current 120 records were deliberately selected for uncertainty. Treat this as
+an error-analysis/development subset rather than an unbiased estimate of full-data
+performance. A separate representative human test set is required for final claims.

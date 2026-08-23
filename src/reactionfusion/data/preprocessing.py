@@ -334,6 +334,8 @@ duplicate leakage. Use `dataset_deduplicated.csv` for the deduplication ablation
 - The reaction-fusion weights are hypotheses pending human validation.
 - Source licensing, platform terms, and institutional ethics approval must be
   confirmed before redistribution beyond this research repository.
+- The selected human-annotation candidates are uncertainty-enriched and are not a
+  representative random sample of the complete dataset.
 
 ## Files
 
@@ -346,6 +348,8 @@ duplicate leakage. Use `dataset_deduplicated.csv` for the deduplication ablation
 - `rejected_records.csv`: non-sensitive rejection audit.
 - `quality_report.json`: reproducible counts and distributions.
 - `labeling_config.json`: exact provisional ReactionFusion parameters.
+- `human_validation/` (created by `evaluate_human_annotations.py`): adjudicated
+  human labels, agreement metrics, paired method evaluation, and interpretation.
 """
     (release_dir / "DATASET_CARD.md").write_text(card, encoding="utf-8")
 

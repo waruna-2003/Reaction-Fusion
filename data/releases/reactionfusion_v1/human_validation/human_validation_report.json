@@ -1,0 +1,287 @@
+{
+  "status": "completed_human_validation_on_uncertainty_enriched_subset",
+  "records": 120,
+  "annotation_workbook": "data\\annotations\\reactionfusion_v1\\adjudication_completed.xlsx",
+  "annotation_workbook_sha256": "f34ec36755d50275e7ce75dce0086a4ea10245d96fbc5805c4095e7031fdf5ee",
+  "dataset": "data\\releases\\reactionfusion_v1\\dataset.csv",
+  "dataset_sha256": "53955b0407466ef863d752e32f5dc6974c15a57205ecae99610bc3d944af781f",
+  "sample_design": "uncertainty_enriched_not_representative",
+  "human_sentiment_distribution": {
+    "neutral": 35,
+    "negative": 48,
+    "uncertain": 3,
+    "mixed": 9,
+    "positive": 25
+  },
+  "inter_annotator_agreement": {
+    "sentiment": {
+      "raw_agreement": 0.725,
+      "cohen_kappa": 0.5942622950819672,
+      "disagreements": 33
+    },
+    "joy": {
+      "raw_agreement": 0.8416666666666667,
+      "cohen_kappa": 0.31899641577060944,
+      "disagreements": 19
+    },
+    "affection": {
+      "raw_agreement": 0.8666666666666667,
+      "cohen_kappa": 0.6066379840196682,
+      "disagreements": 16
+    },
+    "amusement": {
+      "raw_agreement": 0.7333333333333333,
+      "cohen_kappa": 0.41481255714721105,
+      "disagreements": 32
+    },
+    "surprise": {
+      "raw_agreement": 0.975,
+      "cohen_kappa": 0.3908629441624373,
+      "disagreements": 3
+    },
+    "sadness": {
+      "raw_agreement": 0.9166666666666666,
+      "cohen_kappa": 0.7764530551415796,
+      "disagreements": 10
+    },
+    "anger": {
+      "raw_agreement": 0.9166666666666666,
+      "cohen_kappa": 0.47043248014121797,
+      "disagreements": 10
+    },
+    "care_empathy": {
+      "raw_agreement": 0.9333333333333333,
+      "cohen_kappa": 0.4728171334431628,
+      "disagreements": 8
+    },
+    "fear": {
+      "raw_agreement": 0.9083333333333333,
+      "cohen_kappa": 0.28221859706362135,
+      "disagreements": 11
+    },
+    "disgust": {
+      "raw_agreement": 0.8333333333333334,
+      "cohen_kappa": 0.15966386554621834,
+      "disagreements": 20
+    },
+    "approval": {
+      "raw_agreement": 0.7416666666666667,
+      "cohen_kappa": 0.12737508796622102,
+      "disagreements": 31
+    },
+    "sarcasm": {
+      "raw_agreement": 0.8333333333333334,
+      "cohen_kappa": 0.6064928676832267,
+      "disagreements": 20
+    },
+    "confidence": {
+      "raw_agreement": 0.475,
+      "cohen_kappa": 0.21828146003515667,
+      "disagreements": 63
+    }
+  },
+  "adjudication_audit": {
+    "sentiment": {
+      "annotators_agreed": 87,
+      "final_matches_annotator_1": 84,
+      "final_matches_annotator_2": 111,
+      "final_matches_neither": 7
+    },
+    "joy": {
+      "annotators_agreed": 101,
+      "final_matches_annotator_1": 104,
+      "final_matches_annotator_2": 117,
+      "final_matches_neither": 0
+    },
+    "affection": {
+      "annotators_agreed": 104,
+      "final_matches_annotator_1": 107,
+      "final_matches_annotator_2": 117,
+      "final_matches_neither": 0
+    },
+    "amusement": {
+      "annotators_agreed": 88,
+      "final_matches_annotator_1": 88,
+      "final_matches_annotator_2": 119,
+      "final_matches_neither": 1
+    },
+    "surprise": {
+      "annotators_agreed": 117,
+      "final_matches_annotator_1": 118,
+      "final_matches_annotator_2": 119,
+      "final_matches_neither": 0
+    },
+    "sadness": {
+      "annotators_agreed": 110,
+      "final_matches_annotator_1": 110,
+      "final_matches_annotator_2": 116,
+      "final_matches_neither": 2
+    },
+    "anger": {
+      "annotators_agreed": 110,
+      "final_matches_annotator_1": 112,
+      "final_matches_annotator_2": 117,
+      "final_matches_neither": 1
+    },
+    "care_empathy": {
+      "annotators_agreed": 112,
+      "final_matches_annotator_1": 115,
+      "final_matches_annotator_2": 117,
+      "final_matches_neither": 0
+    },
+    "fear": {
+      "annotators_agreed": 109,
+      "final_matches_annotator_1": 113,
+      "final_matches_annotator_2": 114,
+      "final_matches_neither": 1
+    },
+    "disgust": {
+      "annotators_agreed": 100,
+      "final_matches_annotator_1": 102,
+      "final_matches_annotator_2": 118,
+      "final_matches_neither": 0
+    },
+    "approval": {
+      "annotators_agreed": 89,
+      "final_matches_annotator_1": 97,
+      "final_matches_annotator_2": 112,
+      "final_matches_neither": 0
+    },
+    "sarcasm": {
+      "annotators_agreed": 100,
+      "final_matches_annotator_1": 104,
+      "final_matches_annotator_2": 115,
+      "final_matches_neither": 1
+    },
+    "confidence": {
+      "annotators_agreed": 57,
+      "final_matches_annotator_1": 59,
+      "final_matches_annotator_2": 115,
+      "final_matches_neither": 3
+    }
+  },
+  "reactionfusion_vs_human": {
+    "evaluated_records": 117,
+    "excluded_uncertain_records": 3,
+    "accuracy": 0.36752136752136755,
+    "macro_f1_active_human_classes": 0.29041725088236714,
+    "macro_f1_four_classes": 0.29041725088236714,
+    "per_class": {
+      "negative": {
+        "support": 48,
+        "precision": 0.4473684210526316,
+        "recall": 0.3541666666666667,
+        "f1": 0.3953488372093023
+      },
+      "neutral": {
+        "support": 35,
+        "precision": 0.23076923076923078,
+        "recall": 0.2571428571428571,
+        "f1": 0.24324324324324323
+      },
+      "positive": {
+        "support": 25,
+        "precision": 0.425,
+        "recall": 0.68,
+        "f1": 0.5230769230769231
+      },
+      "mixed": {
+        "support": 9,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    "confusion_matrix": {
+      "negative": {
+        "negative": 17,
+        "neutral": 21,
+        "positive": 10,
+        "mixed": 0
+      },
+      "neutral": {
+        "negative": 17,
+        "neutral": 9,
+        "positive": 9,
+        "mixed": 0
+      },
+      "positive": {
+        "negative": 1,
+        "neutral": 7,
+        "positive": 17,
+        "mixed": 0
+      },
+      "mixed": {
+        "negative": 3,
+        "neutral": 2,
+        "positive": 4,
+        "mixed": 0
+      }
+    }
+  },
+  "filtered_baseline_vs_human": {
+    "evaluated_records": 117,
+    "excluded_uncertain_records": 3,
+    "accuracy": 0.42735042735042733,
+    "macro_f1_active_human_classes": 0.27798205489092187,
+    "macro_f1_four_classes": 0.27798205489092187,
+    "per_class": {
+      "negative": {
+        "support": 48,
+        "precision": 0.5,
+        "recall": 0.5208333333333334,
+        "f1": 0.5102040816326531
+      },
+      "neutral": {
+        "support": 35,
+        "precision": 0.2,
+        "recall": 0.02857142857142857,
+        "f1": 0.049999999999999996
+      },
+      "positive": {
+        "support": 25,
+        "precision": 0.3870967741935484,
+        "recall": 0.96,
+        "f1": 0.5517241379310344
+      },
+      "mixed": {
+        "support": 9,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    "confusion_matrix": {
+      "negative": {
+        "negative": 25,
+        "neutral": 3,
+        "positive": 20,
+        "mixed": 0
+      },
+      "neutral": {
+        "negative": 20,
+        "neutral": 1,
+        "positive": 14,
+        "mixed": 0
+      },
+      "positive": {
+        "negative": 1,
+        "neutral": 0,
+        "positive": 24,
+        "mixed": 0
+      },
+      "mixed": {
+        "negative": 4,
+        "neutral": 1,
+        "positive": 4,
+        "mixed": 0
+      }
+    }
+  },
+  "paired_accuracy_comparison": {
+    "reactionfusion_correct_baseline_wrong": 8,
+    "reactionfusion_wrong_baseline_correct": 15,
+    "discordant_records": 23,
+    "two_sided_exact_p_value": 0.21003961563110352
+  }
+}

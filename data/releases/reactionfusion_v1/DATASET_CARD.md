@@ -34,6 +34,8 @@ duplicate leakage. Use `dataset_deduplicated.csv` for the deduplication ablation
 - The reaction-fusion weights are hypotheses pending human validation.
 - Source licensing, platform terms, and institutional ethics approval must be
   confirmed before redistribution beyond this research repository.
+- The selected human-annotation candidates are uncertainty-enriched and are not a
+  representative random sample of the complete dataset.
 
 ## Files
 
@@ -46,3 +48,14 @@ duplicate leakage. Use `dataset_deduplicated.csv` for the deduplication ablation
 - `rejected_records.csv`: non-sensitive rejection audit.
 - `quality_report.json`: reproducible counts and distributions.
 - `labeling_config.json`: exact provisional ReactionFusion parameters.
+- `human_validation/` (created by `evaluate_human_annotations.py`): adjudicated
+  human labels, agreement metrics, paired method evaluation, and interpretation.
+
+## Human-validation status
+
+Human annotation and adjudication are complete for the 120 uncertainty-enriched
+candidates. Sentiment raw agreement is 0.725 and Cohen's kappa is 0.594. On the
+117 non-uncertain adjudicated records, ReactionFusion v1 achieves accuracy 0.368
+and four-class macro F1 0.290; the filtered baseline achieves accuracy 0.427 and
+macro F1 0.278. These figures are intended for difficult-case error analysis, not
+as an unbiased full-dataset performance estimate.
