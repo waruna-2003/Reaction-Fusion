@@ -95,3 +95,16 @@ calibrators, applies confidence-based abstention, serializes the model, and crea
 [docs/REACTIONFUSION_V2.md](docs/REACTIONFUSION_V2.md) for its architecture and
 research limitations.
 
+## ReactionFusion neural v3
+
+Train the reaction-only multi-task neural ensemble with:
+
+```powershell
+python scripts/train_reactionfusion_neural.py
+```
+
+The pipeline runs repeated grouped cross-validation, serializes the neural
+ensemble, and creates `data/releases/reactionfusion_neural_v3/`. See
+[docs/REACTIONFUSION_NEURAL_V3.md](docs/REACTIONFUSION_NEURAL_V3.md) for the
+architecture, development results, and limitations.
+
