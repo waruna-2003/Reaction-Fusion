@@ -111,14 +111,16 @@ class ReactionFusionNeuralModel:
         )
 
 
-def _balanced_weights(target: np.ndarray, mask: np.ndarray, classes: int) -> np.ndarray:
+def _balanced_weights(
+    target: np.ndarray, mask: np.ndarray, classes: int, power: float = 0.5
+) -> np.ndarray:
     weights = np.ones(len(target), dtype=float)
     counts = np.bincount(target[mask], minlength=classes).astype(float)
     nonzero = counts[counts > 0]
     if not len(nonzero):
         return weights
     reference = float(nonzero.mean())
-    class_weights = np.sqrt(reference / np.maximum(counts, 1.0))
+    class_weights = np.power(reference / np.maximum(counts, 1.0), power)
     class_weights = np.clip(class_weights, 0.5, 2.5)
     weights[mask] = class_weights[target[mask]]
     weights[~mask] = 0.0
@@ -146,6 +148,7 @@ def _train_member(
     annotations: pd.DataFrame,
     config: Mapping[str, Any],
     seed: int,
+    initial_member: NeuralMember | None = None,
 ) -> NeuralMember:
     rng = np.random.default_rng(seed)
     classes = tuple(config["sentiment_classes"])
@@ -156,7 +159,18 @@ def _train_member(
     sentiment_ids = np.asarray(
         [class_to_id.get(str(value), 0) for value in sentiment_text], dtype=int
     )
-    sentiment_weights = _balanced_weights(sentiment_ids, sentiment_mask, len(classes))
+    class_weight_power = float(config.get("class_weight_power", 0.5))
+    sentiment_weights = _balanced_weights(
+        sentiment_ids, sentiment_mask, len(classes), class_weight_power
+    )
+    row_weights = np.ones(len(annotations), dtype=float)
+    if "sample_weight" in annotations:
+        row_weights = pd.to_numeric(annotations["sample_weight"], errors="coerce").to_numpy(
+            dtype=float
+        )
+        if not np.all(np.isfinite(row_weights)) or np.any(row_weights <= 0):
+            raise ValueError("Neural sample_weight values must be finite and positive")
+    sentiment_weights *= row_weights
 
     emotion_targets = np.zeros((len(annotations), len(emotions)), dtype=float)
     emotion_masks = np.zeros_like(emotion_targets, dtype=bool)
@@ -167,17 +181,48 @@ def _train_member(
         target = (values == "yes").to_numpy(dtype=int)
         emotion_targets[:, index] = target
         emotion_masks[:, index] = mask
-        emotion_weights[:, index] = _balanced_weights(target, mask, 2)
+        emotion_weights[:, index] = _balanced_weights(
+            target, mask, 2, class_weight_power
+        )
+    emotion_weights *= row_weights[:, None]
 
     rows, inputs = features.shape
     hidden_units = int(config["hidden_units"])
-    input_weights = rng.normal(0.0, np.sqrt(1.0 / inputs), (inputs, hidden_units))
-    input_bias = np.zeros(hidden_units)
-    output_scale = np.sqrt(1.0 / hidden_units)
-    sentiment_output = rng.normal(0.0, output_scale, (hidden_units, len(classes)))
-    sentiment_bias = np.zeros(len(classes))
-    emotion_output = rng.normal(0.0, output_scale, (hidden_units, len(emotions)))
-    emotion_bias = np.zeros(len(emotions))
+    if initial_member is None:
+        input_weights = rng.normal(0.0, np.sqrt(1.0 / inputs), (inputs, hidden_units))
+        input_bias = np.zeros(hidden_units)
+        output_scale = np.sqrt(1.0 / hidden_units)
+        sentiment_output = rng.normal(0.0, output_scale, (hidden_units, len(classes)))
+        sentiment_bias = np.zeros(len(classes))
+        emotion_output = rng.normal(0.0, output_scale, (hidden_units, len(emotions)))
+        emotion_bias = np.zeros(len(emotions))
+    else:
+        expected_shapes = (
+            (inputs, hidden_units),
+            (hidden_units,),
+            (hidden_units, len(classes)),
+            (len(classes),),
+            (hidden_units, len(emotions)),
+            (len(emotions),),
+        )
+        existing = (
+            initial_member.input_weights,
+            initial_member.input_bias,
+            initial_member.sentiment_weights,
+            initial_member.sentiment_bias,
+            initial_member.emotion_weights,
+            initial_member.emotion_bias,
+        )
+        if tuple(value.shape for value in existing) != expected_shapes:
+            raise ValueError("Initial neural member architecture does not match fine-tuning config")
+        (
+            input_weights,
+            input_bias,
+            sentiment_output,
+            sentiment_bias,
+            emotion_output,
+            emotion_bias,
+        ) = (value.copy() for value in existing)
     parameters = [
         input_weights,
         input_bias,
@@ -258,7 +303,12 @@ def train_neural_model(
     metadata: Mapping[str, Any] | None = None,
 ) -> ReactionFusionNeuralModel:
     """Train a deterministic ensemble of regularized multi-task neural networks."""
-    standardizer = Standardizer.fit(features)
+    sample_weight = None
+    if "sample_weight" in annotations:
+        sample_weight = pd.to_numeric(
+            annotations["sample_weight"], errors="coerce"
+        ).to_numpy(dtype=float)
+    standardizer = Standardizer.fit(features, sample_weight=sample_weight)
     standardized = standardizer.transform(features)
     members = tuple(
         _train_member(standardized, annotations, config, int(seed))
@@ -274,5 +324,92 @@ def train_neural_model(
         temperature=1.0,
         abstention_threshold=float(config["minimum_abstention_threshold"]),
         smoothing_alpha=float(config["smoothing_alpha"]),
+        metadata=metadata or {},
+    )
+
+
+def fine_tune_neural_model(
+    base_model: ReactionFusionNeuralModel,
+    features: np.ndarray,
+    annotations: pd.DataFrame,
+    config: Mapping[str, Any],
+    metadata: Mapping[str, Any] | None = None,
+) -> ReactionFusionNeuralModel:
+    """Fine-tune every pretrained ensemble member without refitting its input scale."""
+    if tuple(config["sentiment_classes"]) != base_model.sentiment_classes:
+        raise ValueError("Fine-tuning sentiment classes do not match the pretrained model")
+    if tuple(config["emotion_targets"]) != base_model.emotion_targets:
+        raise ValueError("Fine-tuning emotion targets do not match the pretrained model")
+    if int(config["hidden_units"]) != base_model.members[0].input_bias.shape[0]:
+        raise ValueError("Fine-tuning hidden-unit count does not match the pretrained model")
+    target_standardizer = base_model.standardizer
+    initial_members = base_model.members
+    if bool(config.get("refit_standardizer", False)):
+        target_standardizer = Standardizer.fit(features)
+        scale_ratio = target_standardizer.scale / base_model.standardizer.scale
+        mean_shift = (
+            target_standardizer.mean - base_model.standardizer.mean
+        ) / base_model.standardizer.scale
+        adapted_members = []
+        for member in initial_members:
+            adapted_members.append(
+                NeuralMember(
+                    input_weights=member.input_weights * scale_ratio[:, None],
+                    input_bias=member.input_bias + mean_shift @ member.input_weights,
+                    sentiment_weights=member.sentiment_weights.copy(),
+                    sentiment_bias=member.sentiment_bias.copy(),
+                    emotion_weights=member.emotion_weights.copy(),
+                    emotion_bias=member.emotion_bias.copy(),
+                    seed=member.seed,
+                )
+            )
+        initial_members = tuple(adapted_members)
+    standardized = target_standardizer.transform(features)
+    if bool(config.get("reset_output_heads", False)):
+        reset_members = []
+        hidden_units = int(config["hidden_units"])
+        output_scale = np.sqrt(1.0 / hidden_units)
+        for member in base_model.members:
+            rng = np.random.default_rng(member.seed + 10_000)
+            reset_members.append(
+                NeuralMember(
+                    input_weights=member.input_weights.copy(),
+                    input_bias=member.input_bias.copy(),
+                    sentiment_weights=rng.normal(
+                        0.0,
+                        output_scale,
+                        (hidden_units, len(base_model.sentiment_classes)),
+                    ),
+                    sentiment_bias=np.zeros(len(base_model.sentiment_classes)),
+                    emotion_weights=rng.normal(
+                        0.0,
+                        output_scale,
+                        (hidden_units, len(base_model.emotion_targets)),
+                    ),
+                    emotion_bias=np.zeros(len(base_model.emotion_targets)),
+                    seed=member.seed,
+                )
+            )
+        initial_members = tuple(reset_members)
+    members = tuple(
+        _train_member(
+            standardized,
+            annotations,
+            config,
+            member.seed,
+            initial_member=member,
+        )
+        for member in initial_members
+    )
+    return ReactionFusionNeuralModel(
+        version=str(config["version"]),
+        feature_names=base_model.feature_names,
+        sentiment_classes=base_model.sentiment_classes,
+        emotion_targets=base_model.emotion_targets,
+        standardizer=target_standardizer,
+        members=members,
+        temperature=1.0,
+        abstention_threshold=float(config["minimum_abstention_threshold"]),
+        smoothing_alpha=base_model.smoothing_alpha,
         metadata=metadata or {},
     )

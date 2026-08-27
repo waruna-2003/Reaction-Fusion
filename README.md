@@ -131,3 +131,13 @@ python scripts/evaluate_neural_v3_synthetic.py
 Results are written to
 `data/releases/reactionfusion_augmented_v4/neural_v3_synthetic_test/`.
 
+Train the provenance-weighted combined neural model using all synthetic and legacy
+annotations:
+
+```powershell
+python scripts/train_reactionfusion_combined.py
+```
+
+The combined v5 release is written to
+`data/releases/reactionfusion_neural_combined_v5/`.
+

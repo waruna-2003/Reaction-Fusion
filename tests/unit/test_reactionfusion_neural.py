@@ -5,8 +5,10 @@ import pandas as pd
 
 from reactionfusion.labeling.reactionfusion_neural import (
     ReactionFusionNeuralModel,
+    fine_tune_neural_model,
     train_neural_model,
 )
+from reactionfusion.labeling.reactionfusion_v2 import Standardizer
 
 
 def _config() -> dict:
@@ -86,3 +88,22 @@ def test_neural_training_is_deterministic() -> None:
     assert np.allclose(
         first.predict_probability(features)[0], second.predict_probability(features)[0]
     )
+
+
+def test_weighted_standardizer_respects_row_provenance() -> None:
+    values = np.asarray([[0.0], [10.0]])
+    standardizer = Standardizer.fit(values, sample_weight=np.asarray([1.0, 0.1]))
+    assert standardizer.mean[0] < 1.0
+
+
+def test_pretrained_model_can_be_fine_tuned() -> None:
+    features, annotations = _training_data()
+    base = train_neural_model(features, annotations, ("a", "b", "c"), _config())
+    fine_config = {**_config(), "version": "fine_tuned_test", "epochs": 10}
+    fine_tuned = fine_tune_neural_model(
+        base, features, annotations, fine_config, metadata={"stage": "fine_tune"}
+    )
+    sentiment, emotion = fine_tuned.predict_probability(features)
+    assert fine_tuned.version == "fine_tuned_test"
+    assert sentiment.shape == (8, 4)
+    assert emotion.shape == (8, 2)

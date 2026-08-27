@@ -57,9 +57,20 @@ class Standardizer:
     scale: np.ndarray
 
     @classmethod
-    def fit(cls, values: np.ndarray) -> "Standardizer":
-        mean = values.mean(axis=0)
-        scale = values.std(axis=0)
+    def fit(
+        cls, values: np.ndarray, sample_weight: np.ndarray | None = None
+    ) -> "Standardizer":
+        if sample_weight is None:
+            mean = values.mean(axis=0)
+            scale = values.std(axis=0)
+        else:
+            weights = np.asarray(sample_weight, dtype=float)
+            if weights.shape != (len(values),) or np.any(weights <= 0):
+                raise ValueError("Standardizer sample weights must be positive per-row values")
+            normalized = weights / weights.sum()
+            mean = np.sum(values * normalized[:, None], axis=0)
+            variance = np.sum(np.square(values - mean) * normalized[:, None], axis=0)
+            scale = np.sqrt(variance)
         return cls(mean=mean, scale=np.where(scale < 1e-9, 1.0, scale))
 
     def transform(self, values: np.ndarray) -> np.ndarray:
