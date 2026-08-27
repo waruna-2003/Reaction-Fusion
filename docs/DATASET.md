@@ -1,63 +1,55 @@
 # Dataset protocol
 
-## Required record fields
+## Current source
 
-Keep stable identifiers and a documented schema. A useful initial record contains:
+The active source is `data/raw/original_exports/facebook_posts_original_2904.xlsx`.
+It contains 2,904 Facebook posts and the following columns:
 
 | Field | Purpose |
 |---|---|
-| `record_id` | Internal, non-identifying stable ID |
-| `text` | Sinhala post/comment text after permitted collection |
-| `like_count` ... `care_count` | Counts for all seven reactions |
-| `created_at` | Optional timestamp, generalized when necessary |
-| `source_split_group` | Post/page grouping key used to prevent leakage |
-| `label` | Generated sentiment label |
-| `label_confidence` | ReactionFusion confidence score |
-| `label_version` | Exact labeling algorithm/configuration version |
+| `#` | Source row identifier |
+| `Post Text` | Original Sinhala or mixed-language post text |
+| `Likes` | Like reaction count |
+| `Love` | Love reaction count |
+| `Care` | Care reaction count |
+| `Haha` | Haha reaction count |
+| `Wow` | Wow reaction count |
+| `Sad` | Sad reaction count |
+| `Angry` | Angry reaction count |
+| `Total Reactions` | Sum of the seven reaction counts |
 
-Store original platform IDs separately only when they are legally and ethically
-required, and never expose personal identifiers in committed samples.
+The immutable source workbook must not be edited during annotation.
 
-## Rules
+## Human annotation
 
-1. Treat `data/raw/` as immutable.
-2. Record collection date, source, consent/terms basis, and preprocessing version.
-3. Remove names, profile links, user IDs, and other personal identifiers.
-4. Deduplicate before splitting.
-5. Split by post/source group—not random comment alone—to reduce data leakage.
-6. Freeze the held-out human-annotated test set before tuning ReactionFusion.
-7. Version every label with algorithm parameters and dataset revision.
-8. Keep a manually annotated validation subset with inter-annotator agreement.
+The working file is `data/annotations/original_posts_v1/annotator_01.xlsx`.
+It preserves all source columns and adds only `sentiment`.
 
-## Implemented release files
+Allowed labels:
 
-```text
-data/releases/reactionfusion_v1/
-  dataset.csv
-  dataset_deduplicated.csv
-  train.csv
-  validation.csv
-  test.csv
-  human_annotation_candidates.csv
-  human_annotation_workbook.xlsx
-  rejected_records.csv
-  quality_report.json
-  labeling_config.json
-  DATASET_CARD.md
-```
+- `positive`: mainly favourable or happy meaning
+- `negative`: mainly unfavourable, angry, harmful, or sad meaning
+- `neutral`: primarily factual without a clear positive or negative position
+- `mixed`: meaningful positive and negative sentiment occur together
+- `uncertain`: the annotator cannot assign one of the four research classes reliably
 
-`dataset.csv` retains repeated records for the main experiment, while
-`dataset_deduplicated.csv` supports a deduplication ablation. All occurrences of
-the same normalized text receive the same split, so duplicates cannot leak across
-training, validation, and test sets.
+Do not infer sentiment from reaction counts alone while manually annotating. Read
+the post text and apply the same label definitions consistently.
 
-The annotation workbook is deliberately blinded. Annotators see masked post text
-and language type, but no reaction counts, automatic label, score, or algorithmic
-confidence. Two annotators independently assign one sentiment label, multi-label
-emotions, approval stance, sarcasm, and annotation confidence. The sentiment
-choices are `positive`, `negative`, `neutral`, `mixed`, or `uncertain`; emotion,
-approval, and sarcasm fields use `yes`, `no`, or `uncertain`. An adjudicator then
-resolves disagreements in a separate sheet.
+## Quality and splitting rules
 
-Do not publish raw social-media data until licensing, platform terms, privacy,
-and institutional ethics requirements have been reviewed.
+1. Preserve the raw source unchanged.
+2. Validate that every annotation is one of the five allowed values.
+3. Review missing labels and contradictory labels before training.
+4. Group repeated normalized post text before splitting; 277 repeated-text rows
+   were detected in the source audit.
+5. Freeze a representative human-labeled test set before tuning the next model.
+6. Never place duplicates of the same normalized post text in different splits.
+7. Report class support, macro F1, per-class precision/recall, accuracy, confusion
+   matrices, and calibration—not accuracy alone.
+8. A single annotator is acceptable for initial development. Before final research
+   claims, obtain a second independent annotation for a representative subset and
+   report inter-annotator agreement.
+
+Earlier synthetic and legacy datasets are not part of the active dataset. Their
+model reports are retained only under `experiments/model_evolution/`.

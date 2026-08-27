@@ -50,6 +50,8 @@ data/external/**
 # Models and generated experiment artifacts
 models/**
 !models/.gitkeep
+!models/experimental/
+!models/experimental/**
 artifacts/
 checkpoints/
 mlruns/

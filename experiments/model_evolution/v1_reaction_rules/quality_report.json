@@ -1,0 +1,50 @@
+{
+  "source_records": 1000,
+  "accepted_records": 997,
+  "rejected_records": 3,
+  "privacy_masked_records": 4,
+  "duplicate_groups": 51,
+  "duplicate_occurrences_beyond_first": 54,
+  "deduplicated_records": 943,
+  "language_distribution": {
+    "mixed": 287,
+    "singlish": 13,
+    "sinhala": 697
+  },
+  "label_distribution": {
+    "negative": 91,
+    "neutral": 533,
+    "positive": 373
+  },
+  "baseline_label_distribution": {
+    "negative": 199,
+    "neutral": 110,
+    "positive": 688
+  },
+  "split_distribution": {
+    "test": 152,
+    "train": 694,
+    "validation": 151
+  },
+  "split_label_distribution": {
+    "test": {
+      "negative": 13,
+      "neutral": 82,
+      "positive": 57
+    },
+    "train": {
+      "negative": 65,
+      "neutral": 367,
+      "positive": 262
+    },
+    "validation": {
+      "negative": 13,
+      "neutral": 84,
+      "positive": 54
+    }
+  },
+  "low_confidence_records": 471,
+  "annotation_candidates": 120,
+  "label_version": "reactionfusion_v1_provisional",
+  "source_sha256": "fc47c65055c06804deff9077c6cdc6fbce971da0cd14591876b83861e59d8032"
+}

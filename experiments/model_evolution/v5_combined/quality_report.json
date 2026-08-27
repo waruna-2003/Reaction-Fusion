@@ -1,0 +1,19 @@
+{
+  "records": 15997,
+  "human_oof_records": 120,
+  "synthetic_training_records": 15000,
+  "uncertain_records": 575,
+  "label_distribution": {
+    "neutral": 8058,
+    "negative": 3833,
+    "positive": 1154,
+    "uncertain": 575,
+    "mixed": 2377
+  },
+  "prediction_source_distribution": {
+    "final_provenance_weighted_model": 15877,
+    "repeated_grouped_human_oof": 120
+  },
+  "cross_split_text_group_leakage": 0,
+  "version": "reactionfusion_neural_combined_v5_development"
+}
