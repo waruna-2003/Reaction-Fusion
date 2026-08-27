@@ -122,3 +122,12 @@ synthetic annotations are retained for augmentation experiments but are not trea
 as human ground truth. See
 [docs/dataset_sources/synthetic_augmentation_15k.md](docs/dataset_sources/synthetic_augmentation_15k.md).
 
+Test the frozen neural v3 model on all synthetic records without retraining:
+
+```powershell
+python scripts/evaluate_neural_v3_synthetic.py
+```
+
+Results are written to
+`data/releases/reactionfusion_augmented_v4/neural_v3_synthetic_test/`.
+
