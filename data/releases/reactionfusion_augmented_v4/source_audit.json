@@ -1,0 +1,28 @@
+{
+  "legacy_dataset_sha256": "53955b0407466ef863d752e32f5dc6974c15a57205ecae99610bc3d944af781f",
+  "synthetic_posts_sha256": "f56f39e408d6640f96fc5059b776e32b60967acef7abdc72636ec0afa3ffdb29",
+  "synthetic_annotations_sha256": "47e7d0065910adec337ff06e1e203a85e0f43b5508f32baf793ce09556806377",
+  "human_annotations_sha256": "f34ec36755d50275e7ce75dce0086a4ea10245d96fbc5805c4095e7031fdf5ee",
+  "synthetic_source_notice": "URLs, reaction counts, and text are fabricated according to the workbook README",
+  "annotation_audit": {
+    "records": 15000,
+    "row_alignment_valid": true,
+    "sentiment_distribution": {
+      "negative": 3343,
+      "positive": 3428,
+      "neutral": 2867,
+      "mixed": 5362
+    },
+    "annotator_sentiment_raw_agreement": 0.4836,
+    "annotator_sentiment_cohen_kappa": 0.34760904075631577,
+    "sentiment_disagreements": 7746,
+    "adjudication_matches_annotator_2_when_disagreeing": 0.9734056287115931,
+    "annotation_note_unique_counts": {
+      "Annotator 1": 4,
+      "Annotator 2": 117,
+      "Adjudication": 44
+    },
+    "provenance_classification": "provided_synthetic_annotations_unverified",
+    "ground_truth_eligible": false
+  }
+}

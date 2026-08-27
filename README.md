@@ -108,3 +108,17 @@ ensemble, and creates `data/releases/reactionfusion_neural_v3/`. See
 [docs/REACTIONFUSION_NEURAL_V3.md](docs/REACTIONFUSION_NEURAL_V3.md) for the
 architecture, development results, and limitations.
 
+## Synthetic augmentation restart
+
+The guarded v4 merge combines the 997 legacy records with 15,000 explicitly
+synthetic posts while preserving source and annotation provenance:
+
+```powershell
+python scripts/merge_augmented_dataset.py
+```
+
+Outputs are written to `data/releases/reactionfusion_augmented_v4/`. The supplied
+synthetic annotations are retained for augmentation experiments but are not treated
+as human ground truth. See
+[docs/dataset_sources/synthetic_augmentation_15k.md](docs/dataset_sources/synthetic_augmentation_15k.md).
+

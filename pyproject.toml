@@ -18,6 +18,7 @@ reactionfusion-preprocess = "reactionfusion.data.preprocessing:main"
 reactionfusion-evaluate-annotations = "reactionfusion.evaluation.human_validation:main"
 reactionfusion-train-v2 = "reactionfusion.training.reactionfusion_v2_pipeline:main"
 reactionfusion-train-neural = "reactionfusion.training.reactionfusion_neural_pipeline:main"
+reactionfusion-merge-augmentation = "reactionfusion.data.merge_augmented:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.6"]

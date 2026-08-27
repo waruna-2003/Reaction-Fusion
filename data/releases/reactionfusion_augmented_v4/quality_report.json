@@ -1,0 +1,39 @@
+{
+  "records": 15997,
+  "deduplicated_records": 15943,
+  "origin_distribution": {
+    "legacy_source": 997,
+    "synthetic_augmentation": 15000
+  },
+  "annotation_provenance_distribution": {
+    "none": 877,
+    "human_adjudicated_development": 120,
+    "provided_synthetic_unverified": 15000
+  },
+  "split_distribution": {
+    "train": 11193,
+    "test": 2401,
+    "validation": 2403
+  },
+  "cross_split_text_group_leakage": 0,
+  "v1_label_distribution": {
+    "positive": 5136,
+    "neutral": 7852,
+    "negative": 2216,
+    "mixed": 793
+  },
+  "v2_label_distribution": {
+    "uncertain": 227,
+    "negative": 2896,
+    "neutral": 8239,
+    "positive": 701,
+    "mixed": 3934
+  },
+  "neural_v3_label_distribution": {
+    "uncertain": 762,
+    "negative": 1093,
+    "positive": 647,
+    "neutral": 11772,
+    "mixed": 1723
+  }
+}
