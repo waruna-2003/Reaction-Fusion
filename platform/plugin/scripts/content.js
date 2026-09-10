@@ -223,37 +223,57 @@
   function fetchAndAnalyzePost(postEl, wrapper, triggerBtn, postId) {
     if (triggerBtn) triggerBtn.classList.add('rf-state-loading');
 
-    chrome.runtime.sendMessage({ action: 'fetch_mock_post', postId }, (res) => {
-      if (!res || !res.success || !res.data) {
-        showErrorPopup(triggerBtn, postId, res?.error || 'Unable to fetch post data from Mock Facebook API.');
-        if (triggerBtn) triggerBtn.classList.remove('rf-state-loading');
-        return;
+    try {
+      if (!chrome.runtime?.id) {
+        throw new Error('Extension context invalidated. Please refresh the page (F5).');
       }
 
-      const postData = res.data;
-      const commentsList = (postData.comments || postData.recentComments || []).map(c => c.text || c.content || '');
-      const rawReactions = postData.metrics?.reactionsByType || {};
-
-      chrome.runtime.sendMessage({
-        action: 'analyze_post',
-        payload: {
-          post_id: postId,
-          comments: commentsList,
-          reactions: rawReactions
+      chrome.runtime.sendMessage({ action: 'fetch_mock_post', postId }, (res) => {
+        if (chrome.runtime.lastError) {
+          if (triggerBtn) triggerBtn.classList.remove('rf-state-loading');
+          showErrorPopup(triggerBtn, postId, 'Extension reloaded. Please refresh this page (F5).');
+          return;
         }
-      }, (analysisRes) => {
-        if (triggerBtn) triggerBtn.classList.remove('rf-state-loading');
 
-        if (analysisRes && analysisRes.success && analysisRes.data) {
-          const data = analysisRes.data;
-          postCache.set(postId, data);
-          updateTriggerStatus(triggerBtn, data.sentiment);
-          renderPopup(wrapper, triggerBtn, data, postId, postEl);
-        } else {
-          showErrorPopup(triggerBtn, postId, analysisRes?.error || 'Inference engine error');
+        if (!res || !res.success || !res.data) {
+          showErrorPopup(triggerBtn, postId, res?.error || 'Unable to fetch post data from Mock Facebook API.');
+          if (triggerBtn) triggerBtn.classList.remove('rf-state-loading');
+          return;
         }
+
+        const postData = res.data;
+        const commentsList = (postData.comments || postData.recentComments || []).map(c => c.text || c.content || '');
+        const rawReactions = postData.metrics?.reactionsByType || {};
+
+        chrome.runtime.sendMessage({
+          action: 'analyze_post',
+          payload: {
+            post_id: postId,
+            comments: commentsList,
+            reactions: rawReactions
+          }
+        }, (analysisRes) => {
+          if (triggerBtn) triggerBtn.classList.remove('rf-state-loading');
+
+          if (chrome.runtime.lastError) {
+            showErrorPopup(triggerBtn, postId, 'Extension reloaded. Please refresh this page (F5).');
+            return;
+          }
+
+          if (analysisRes && analysisRes.success && analysisRes.data) {
+            const data = analysisRes.data;
+            postCache.set(postId, data);
+            updateTriggerStatus(triggerBtn, data.sentiment);
+            renderPopup(wrapper, triggerBtn, data, postId, postEl);
+          } else {
+            showErrorPopup(triggerBtn, postId, analysisRes?.error || 'Inference engine error');
+          }
+        });
       });
-    });
+    } catch (err) {
+      if (triggerBtn) triggerBtn.classList.remove('rf-state-loading');
+      showErrorPopup(triggerBtn, postId, err.message || 'Extension reloaded. Please refresh this page (F5).');
+    }
   }
 
   function updateTriggerStatus(btn, sentiment) {

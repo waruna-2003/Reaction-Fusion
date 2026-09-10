@@ -1,14 +1,13 @@
+import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
 import { postsRouter } from './routes/posts';
 import { reactionsRouter } from './routes/reactions';
 import { commentsRouter } from './routes/comments';
 import { debugRouter } from './routes/debug';
 import { prisma } from './prisma';
 
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
