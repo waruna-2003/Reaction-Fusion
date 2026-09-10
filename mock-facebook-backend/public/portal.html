@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mock Facebook REST API Engine - Developer Portal</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+  body { background: #0B1120; color: #F1F5F9; padding: 32px; min-height: 100vh; }
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #1E293B; flex-wrap: wrap; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .logo { width: 38px; height: 38px; background: #1877F2; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 22px; color: #fff; box-shadow: 0 0 12px rgba(24, 119, 242, 0.4); }
+  .title { font-size: 19px; font-weight: 700; color: #FFFFFF; }
+  .subtitle { font-size: 13px; color: #94A3B8; margin-top: 2px; }
+  .badge-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .badge { background: #1E293B; border: 1px solid #334155; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; color: #38BDF8; display: flex; align-items: center; gap: 6px; }
+  .badge.green { color: #4ADE80; border-color: rgba(74, 222, 128, 0.3); background: rgba(74, 222, 128, 0.1); }
+  
+  .grid { display: grid; grid-template-columns: 320px 1fr; gap: 24px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  
+  .sidebar { background: #0F172A; border: 1px solid #1E293B; border-radius: 12px; padding: 20px; height: fit-content; }
+  .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B; margin-bottom: 12px; }
+  
+  .endpoint-item { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #1E293B; border: 1px solid transparent; border-radius: 8px; margin-bottom: 8px; font-size: 13px; font-family: 'Fira Code', Consolas, monospace; cursor: pointer; transition: all 0.15s ease; user-select: none; }
+  .endpoint-item:hover { background: #24344D; border-color: #38BDF8; }
+  .endpoint-item.active-endpoint { border-color: #38BDF8; background: #1E293B; box-shadow: 0 0 10px rgba(56, 189, 248, 0.15); }
+  
+  .method { padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+  .method.get { background: rgba(56, 189, 248, 0.2); color: #38BDF8; }
+  .method.post { background: rgba(74, 222, 128, 0.2); color: #4ADE80; }
+  
+  .stats-card { margin-top: 24px; background: #131E32; border: 1px solid #1E293B; border-radius: 8px; padding: 14px; }
+  .stat-row { display: flex; justify-content: space-between; font-size: 12px; padding: 8px 0; border-bottom: 1px solid #1E293B; }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-val { font-weight: 600; color: #F8FAFC; }
+
+  .main-panel { background: #0F172A; border: 1px solid #1E293B; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; min-height: 520px; }
+  .request-bar { background: #1E293B; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; flex-wrap: wrap; gap: 12px; }
+  .req-left { display: flex; align-items: center; gap: 12px; font-family: 'Fira Code', Consolas, monospace; font-size: 14px; }
+  .req-url { color: #F8FAFC; font-weight: 500; }
+  .req-meta { display: flex; align-items: center; gap: 12px; font-size: 12px; }
+  .status-tag { color: #4ADE80; font-weight: 700; background: rgba(74, 222, 128, 0.1); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(74, 222, 128, 0.3); }
+  .send-btn { background: #2563EB; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+  .send-btn:hover { background: #1D4ED8; }
+  
+  .json-viewer { padding: 24px; font-family: 'Fira Code', Consolas, Monaco, monospace; font-size: 13px; line-height: 1.6; overflow-y: auto; color: #CBD5E1; max-height: 640px; }
+  pre { white-space: pre-wrap; word-break: break-word; }
+  .key { color: #38BDF8; font-weight: 600; }
+  .string { color: #A7F3D0; }
+  .number { color: #FCD34D; }
+  .boolean { color: #F472B6; }
+  .null { color: #94A3B8; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <div class="logo">f</div>
+    <div>
+      <div class="title">Mock Facebook REST API Engine</div>
+      <div class="subtitle">Independent Social Network Backend for ReactionFusion Third-Party Integration</div>
+    </div>
+  </div>
+  <div class="badge-row">
+    <div class="badge green">● Server Active: Port 4000</div>
+    <div class="badge">SQLite dev.db (Prisma ORM)</div>
+    <div class="badge">Express 4.21 + TypeScript</div>
+  </div>
+</div>
+
+<div class="grid">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="section-label">Available REST Endpoints</div>
+    
+    <div class="endpoint-item active-endpoint" onclick="loadEndpoint('single')">
+      <span class="method get">GET</span>
+      <span>/api/posts/:id</span>
+    </div>
+    
+    <div class="endpoint-item" onclick="loadEndpoint('feed')">
+      <span class="method get">GET</span>
+      <span>/api/posts</span>
+    </div>
+    
+    <div class="endpoint-item" onclick="loadEndpoint('reaction')">
+      <span class="method post">POST</span>
+      <span>/api/posts/:id/reactions</span>
+    </div>
+    
+    <div class="endpoint-item" onclick="loadEndpoint('comment')">
+      <span class="method post">POST</span>
+      <span>/api/posts/:id/comments</span>
+    </div>
+
+    <div class="endpoint-item" onclick="loadEndpoint('health')">
+      <span class="method get">GET</span>
+      <span>/api/health</span>
+    </div>
+
+    <div class="stats-card">
+      <div class="section-label" style="margin-bottom: 8px;">Database Inventory</div>
+      <div class="stat-row"><span>Sri Lankan Users</span><span class="stat-val">36</span></div>
+      <div class="stat-row"><span>Calibrated Posts</span><span class="stat-val">11</span></div>
+      <div class="stat-row"><span>Authentic Comments</span><span class="stat-val">48</span></div>
+      <div class="stat-row"><span>Reaction Enforce</span><span class="stat-val">@@unique([postId, userId])</span></div>
+      <div class="stat-row"><span>Outbound Webhook</span><span class="stat-val">Active (httpbin)</span></div>
+    </div>
+  </div>
+
+  <!-- Main Panel -->
+  <div class="main-panel">
+    <div class="request-bar">
+      <div class="req-left">
+        <span class="method get" id="active-method">GET</span>
+        <span class="req-url" id="active-url">http://localhost:4000/api/posts/sinhala-post-1</span>
+      </div>
+      <div class="req-meta">
+        <span class="status-tag" id="status-tag">200 OK</span>
+        <span style="color:#94A3B8;" id="timing-tag">• 14ms</span>
+        <span style="color:#94A3B8;" id="size-tag">• 2.4 KB</span>
+        <button class="send-btn" onclick="executeCurrent()">Execute</button>
+      </div>
+    </div>
+
+    <div class="json-viewer">
+      <pre id="json-output"></pre>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentEndpoint = 'single';
+
+const endpoints = {
+  single: {
+    method: 'GET',
+    url: 'http://localhost:4000/api/posts/sinhala-post-1',
+    path: '/api/posts/sinhala-post-1'
+  },
+  feed: {
+    method: 'GET',
+    url: 'http://localhost:4000/api/posts?limit=3',
+    path: '/api/posts?limit=3'
+  },
+  reaction: {
+    method: 'POST',
+    url: 'http://localhost:4000/api/posts/sinhala-post-1/reactions',
+    path: '/api/posts/sinhala-post-1/reactions',
+    body: { userId: 'user-me', type: 'LOVE' }
+  },
+  comment: {
+    method: 'POST',
+    url: 'http://localhost:4000/api/posts/sinhala-post-1/comments',
+    path: '/api/posts/sinhala-post-1/comments',
+    body: { authorId: 'user-me', text: 'අපේ කොල්ලොන්ට ජය වේවා! 🇱🇰' }
+  },
+  health: {
+    method: 'GET',
+    url: 'http://localhost:4000/api/health',
+    path: '/api/health'
+  }
+};
+
+function syntaxHighlight(json) {
+  if (typeof json != 'string') {
+    json = JSON.stringify(json, undefined, 2);
+  }
+  json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+    let cls = 'number';
+    if (/^"/.test(match)) {
+      if (/:$/.test(match)) {
+        cls = 'key';
+      } else {
+        cls = 'string';
+      }
+    } else if (/true|false/.test(match)) {
+      cls = 'boolean';
+    } else if (/null/.test(match)) {
+      cls = 'null';
+    }
+    return '<span class="' + cls + '">' + match + '</span>';
+  });
+}
+
+async function loadEndpoint(key) {
+  currentEndpoint = key;
+  document.querySelectorAll('.endpoint-item').forEach(el => el.classList.remove('active-endpoint'));
+  event.currentTarget.classList.add('active-endpoint');
+  
+  const cfg = endpoints[key];
+  document.getElementById('active-method').textContent = cfg.method;
+  document.getElementById('active-method').className = 'method ' + cfg.method.toLowerCase();
+  document.getElementById('active-url').textContent = cfg.url;
+  
+  await executeCurrent();
+}
+
+async function executeCurrent() {
+  const cfg = endpoints[currentEndpoint];
+  const startTime = performance.now();
+  
+  try {
+    const opts = { method: cfg.method };
+    if (cfg.body) {
+      opts.headers = { 'Content-Type': 'application/json' };
+      opts.body = JSON.stringify(cfg.body);
+    }
+    const res = await fetch(cfg.path, opts);
+    const duration = Math.round(performance.now() - startTime);
+    const data = await res.json();
+    const text = JSON.stringify(data, null, 2);
+    const sizeKb = (new Blob([text]).size / 1024).toFixed(1);
+    
+    document.getElementById('status-tag').textContent = `${res.status} ${res.statusText || 'OK'}`;
+    document.getElementById('timing-tag').textContent = `• ${duration}ms`;
+    document.getElementById('size-tag').textContent = `• ${sizeKb} KB`;
+    document.getElementById('json-output').innerHTML = syntaxHighlight(data);
+  } catch (err) {
+    document.getElementById('status-tag').textContent = 'Live Fetch Failed';
+    document.getElementById('timing-tag').textContent = '• Local Fallback';
+    document.getElementById('size-tag').textContent = '• 2.4 KB';
+    
+    // Default fallback display matching initial screenshot
+    const fallback = {
+      success: true,
+      data: {
+        id: "sinhala-post-1",
+        author: {
+          name: "ඉසුරු විජේසිංහ",
+          handle: "isuru_w",
+          avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80"
+        },
+        content: "ශ්‍රී ලංකා කොල්ලන්ට උණුසුම් සුබ පැතුම්! 🏏🇱🇰 මොන තරම් විශිෂ්ට සටනක්ද මේක... අවසාන පන්දු ඕවරය වෙනකම්ම හුස්ම අල්ලගෙන බැලුවේ. අපේ රටට ජය වේවා!",
+        metrics: {
+          totalReactions: 33,
+          totalComments: 5,
+          reactionsByType: {
+            LIKE: 12,
+            LOVE: 15,
+            WOW: 6,
+            CARE: 0,
+            HAHA: 0,
+            SAD: 0,
+            ANGRY: 0
+          }
+        },
+        recentComments: [
+          {
+            author: "සචින්ත මධුශංක",
+            text: "අපේ කොල්ලො ටික නම් සුපිරියටම සෙල්ලම් කරා ආඩම්බරයි ලංකාව ගැන 🇱🇰🔥"
+          },
+          {
+            author: "ඩිලාන් ප්‍රනාන්දු",
+            text: "ජයවේවා ශ්‍රී ලංකා! විශිෂ්ට ජයග්‍රහණයක් කොල්ලනේ. සුබ පැතුම්!"
+          },
+          {
+            author: "කසුන් පෙරේරා",
+            text: "අන්තිම මොහොත වෙනකන් සටන අතෑරියේ නෑ. ඇත්තටම හරිම සතුටුයි."
+          }
+        ]
+      }
+    };
+    document.getElementById('json-output').innerHTML = syntaxHighlight(fallback);
+  }
+}
+
+// Initial auto-load
+executeCurrent();
+</script>
+
+</body>
+</html>

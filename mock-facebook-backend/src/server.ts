@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import path from 'path';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -7,6 +8,7 @@ import { reactionsRouter } from './routes/reactions';
 import { commentsRouter } from './routes/comments';
 import { debugRouter } from './routes/debug';
 import { prisma } from './prisma';
+
 
 
 const app = express();
@@ -49,14 +51,19 @@ app.use(
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, '../public')));
 
-// Root health check & API metadata
-app.get('/', (_req: Request, res: Response) => {
+// Root health check & API metadata (Serves Developer Portal for browsers, JSON for APIs)
+app.get('/', (req: Request, res: Response) => {
+  if (req.accepts('html')) {
+    return res.sendFile(path.join(__dirname, '../public/portal.html'));
+  }
   res.json({
     service: 'Mock Facebook REST API',
     status: 'online',
     version: '1.0.0',
     documentation: {
+      portal: 'GET /portal (Interactive Web UI)',
       feed: 'GET /api/posts',
       createPost: 'POST /api/posts',
       singlePost: 'GET /api/posts/:id',
@@ -74,9 +81,14 @@ app.get('/', (_req: Request, res: Response) => {
   });
 });
 
+app.get('/portal', (_req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, '../public/portal.html'));
+});
+
 app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ status: 'healthy', timestamp: new Date().toISOString() });
 });
+
 
 // Mount modular sub-routers
 app.use('/api/posts', postsRouter);
