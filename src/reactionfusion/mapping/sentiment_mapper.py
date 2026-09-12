@@ -1,3 +1,6 @@
+from pathlib import Path
+
+
 class SentimentMapper:
     """
     Phase 10: Rule-Based Sentiment Mapper.
@@ -5,10 +8,11 @@ class SentimentMapper:
     rules to categorize a post into Positive, Negative, Mixed, or Neutral,
     while providing a transparent JSON explanation.
     """
-    def __init__(self, config=None):
-        if config is None:
-            # Default validation-based weights
-            self.config = {
+    def __init__(self, config=None, config_path=None):
+        if config is not None:
+            self.config = config
+        else:
+            default_config = {
                 "positive": {
                     "joy": 1.0, "affection": 0.8, "approval": 0.8, "pride": 0.7,
                     "gratitude": 0.8, "hope": 0.7, "excitement": 0.7, "relief": 0.6
@@ -27,8 +31,17 @@ class SentimentMapper:
                     "evidence": 0.35
                 }
             }
-        else:
-            self.config = config
+            yaml_path = Path(config_path) if config_path else Path(__file__).resolve().parent.parent.parent.parent / "configs/sentiment_mapper.yaml"
+            loaded_cfg = None
+            if yaml_path.exists() and yaml_path.stat().st_size > 0:
+                try:
+                    import yaml
+                    with open(yaml_path, "r", encoding="utf-8") as f:
+                        loaded_cfg = yaml.safe_load(f)
+                except Exception:
+                    pass
+            self.config = loaded_cfg if (loaded_cfg and "positive" in loaded_cfg and "thresholds" in loaded_cfg) else default_config
+
 
     def _calculate_score(self, probs: dict, weight_dict: dict) -> float:
         score = 0.0

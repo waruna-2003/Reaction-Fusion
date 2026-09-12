@@ -26,3 +26,10 @@ build/
 # Model checkpoints & large binary caches
 *.pt.tmp
 *.tar.gz
+
+# Reports, demonstration scripts, and Word documents
+*.docx
+*.docx.tmp
+*BACKUP*
+docs/
+
